@@ -92,7 +92,7 @@ where the `saturation`, `jig_type_dist` and `n_flights` refer to the
 parameters `--occupancy-rate-racks`, `--jig-type-distribution` and 
 `--num-flights` respectively.
 
-The parameters for the provided set of training instances can be found in the [benchmarks repository](TODO).
+The parameters for the provided set of training instances can be found in the [benchmarks repository](https://github.com/TUPLES-Trustworthy-AI/Beluga-AI-Challenge-Benchmarks).
 
 ### Fixed Configuration
 
