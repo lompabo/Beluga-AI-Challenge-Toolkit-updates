@@ -35,7 +35,8 @@ class SingleSimulationOutcome:
                  step_limit_reached : bool,
                  free_racks : int,
                  prb : BelugaProblem,
-                 alpha : float
+                 alpha : float,
+                 beta : float
                  ):
         self.plan_construction_time = plan_construction_time
         self.error_msg = error_msg
@@ -48,7 +49,7 @@ class SingleSimulationOutcome:
         self.time_limit_reached = time_limit_reached
         self.step_limit_reached = step_limit_reached
         self.free_racks = free_racks
-        self.score = compute_score_dict(self, prb, alpha)
+        self.score = compute_score_dict(self, prb, alpha, beta)
 
     def to_json_obj(self):
         return {
@@ -170,16 +171,20 @@ class InvalidActionException(EvaluationException):
 
 def compute_score_dict(outcome : SingleSimulationOutcome,
                        prb : BelugaProblem,
-                       alpha : float):
+                       alpha : float,
+                       beta : float):
+    # First input term (goal reached)
     A = outcome.goal_reached
+    # Second input term (relative plan length)
     B = 0
     if outcome.plan is not None:
         B = len(outcome.plan.actions) / len(prb.jigs)
+    # Third input term (inverse of the relative number of free racks)
     C = 0
     if outcome.free_racks is not None:
         C = len(prb.racks) / (1 + outcome.free_racks)
-    value = A * np.exp(-alpha * np.sqrt(B * C))
-    res = {'value': value, 'alpha': alpha}
+    value = A * np.exp(- alpha * B - beta * C)
+    res = {'value': value, 'alpha': alpha, 'beta': beta}
     return res
 
 # ============================================================================
@@ -458,7 +463,8 @@ class DeterministicEvaluator:
                  planner : DeterministicPlannerAPI,
                  max_steps : int = None,
                  time_limit : int = None,
-                 alpha : float = 0.1
+                 alpha : float = 0.1,
+                 beta : float = 0.1
                  ):
         # Check arguments
         if max_steps is not None and max_steps <= 0:
@@ -473,6 +479,7 @@ class DeterministicEvaluator:
         self.max_steps = max_steps
         self.time_limit = time_limit
         self.alpha = alpha
+        self.beta = beta
         # Internal fields
         self.es = None
         self.domain = None
@@ -519,7 +526,8 @@ class DeterministicEvaluator:
                                               step_limit_reached=False,
                                               free_racks=0,
                                               prb=self.prb,
-                                              alpha=self.alpha)
+                                              alpha=self.alpha,
+                                              beta=self.beta)
             if out_stem is not None:
                 self.es._dump_to_json_file(out_stem + '_outcome.json', outcome)
             return outcome
@@ -599,7 +607,8 @@ class DeterministicEvaluator:
                                                   step_limit_reached=False,
                                                   free_racks=self.es._get_free_racks(final_state),
                                                   prb=self.prb,
-                                                  alpha=self.alpha)
+                                                  alpha=self.alpha,
+                                                  beta=self.beta)
                 if out_stem is not None:
                     self.es._dump_to_json_file(out_stem + '_outcome.json', outcome)
                 return outcome
@@ -620,7 +629,8 @@ class DeterministicEvaluator:
                                           step_limit_reached= (step == self.max_steps-1),
                                           free_racks=self.es._get_free_racks(final_state),
                                           prb=self.prb,
-                                          alpha=self.alpha)
+                                          alpha=self.alpha,
+                                          beta=self.beta)
         if out_stem is not None:
             self.es._dump_to_json_file(out_stem + '_outcome.json', outcome)
 
@@ -644,7 +654,8 @@ class ProbabilisticEvaluator:
                  max_steps : int = None,
                  time_limit : int = None,
                  seed : int = None,
-                 alpha : float = 0.1
+                 alpha : float = 0.1,
+                 beta : float = 0.1
                  ):
         # Check arguments
         if nsamples <= 0:
@@ -663,6 +674,7 @@ class ProbabilisticEvaluator:
         self.time_limit = time_limit
         self.seed = seed
         self.alpha = alpha
+        self.beta = beta
         # Internal fields
         self.es = None
         self.domain = None
@@ -696,7 +708,8 @@ class ProbabilisticEvaluator:
                                           step_limit_reached=False,
                                           free_racks=None,
                                           prb=self.prb,
-                                          alpha=self.alpha)
+                                          alpha=self.alpha,
+                                          beta=self.beta)
             return res
 
         # Reset the domain state
@@ -788,7 +801,8 @@ class ProbabilisticEvaluator:
                                               step_limit_reached=False,
                                               free_racks=self.es._get_free_racks(bstate),
                                               prb=self.prb,
-                                              alpha=self.alpha)
+                                              alpha=self.alpha,
+                                              beta=self.beta)
                 return res
 
         # Return the result of the simulation
@@ -804,7 +818,8 @@ class ProbabilisticEvaluator:
                                       step_limit_reached=(current_step == self.max_steps-1),
                                       free_racks=self.es._get_free_racks(bstate),
                                       prb=self.prb,
-                                      alpha=self.alpha)
+                                      alpha=self.alpha,
+                                      beta=self.beta)
         return res
 
 
