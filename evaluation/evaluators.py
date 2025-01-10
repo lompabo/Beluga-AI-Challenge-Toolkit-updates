@@ -124,7 +124,7 @@ class MultipleSimulationOutcome:
 
     def _avg_score_dict(self):
         keys = self.individual_outcomes[0].score.keys()
-        return {k:np.mean([o.score[k] for o in self.individual_outcomes]) for k in keys}
+        return {k:np.nanmean([o.score[k] for o in self.individual_outcomes]) for k in keys}
 
     def to_json_obj(self):
         return {
@@ -465,8 +465,8 @@ class DeterministicEvaluator:
                  planner : DeterministicPlannerAPI,
                  max_steps : int = None,
                  time_limit : int = None,
-                 alpha : float = 0.1,
-                 beta : float = 0.1
+                 alpha : float = 0.7,
+                 beta : float = 0.0004
                  ):
         # Check arguments
         if max_steps is not None and max_steps <= 0:
@@ -512,7 +512,7 @@ class DeterministicEvaluator:
         elapsed_time += time.time() - tstart
 
         # Handle the case where no plan has been built
-        no_plan = (plan is None)
+        no_plan = (plan is None or len(plan.actions) == 0)
         timeout = (self.time_limit is not None and elapsed_time > self.time_limit)
         if no_plan or timeout:
             msg = 'No plan was produced' if no_plan else 'Plan not accepted (time limit reached)'
@@ -526,7 +526,7 @@ class DeterministicEvaluator:
                                               invalid_plan=False,
                                               time_limit_reached=timeout,
                                               step_limit_reached=False,
-                                              free_racks=0,
+                                              free_racks=None,
                                               prb=self.prb,
                                               alpha=self.alpha,
                                               beta=self.beta)
@@ -656,8 +656,8 @@ class ProbabilisticEvaluator:
                  max_steps : int = None,
                  time_limit : int = None,
                  seed : int = None,
-                 alpha : float = 0.1,
-                 beta : float = 0.1
+                 alpha : float = 0.7,
+                 beta : float = 0.0004
                  ):
         # Check arguments
         if nsamples <= 0:
