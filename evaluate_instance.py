@@ -132,7 +132,16 @@ if __name__ == "__main__":
         "--alpha",
         dest="alpha",
         help="configure the alpha value for the score function",
-        default=0.1,
+        default=0.7,
+        type=float,
+        required=False,
+    )
+
+    parser.add_argument(
+        "--beta",
+        dest="beta",
+        help="configure the beta value for the score function",
+        default=0.0004,
         type=float,
         required=False,
     )
@@ -205,7 +214,8 @@ if __name__ == "__main__":
                               time_limit=args.time_limit,
                               planner=planner,
                               seed=gen_params['config'].seed,
-                              alpha=args.alpha)
+                              alpha=args.alpha,
+                              beta=args.beta)
     else:
         evaluator = DeterministicEvaluator(prb=inst,
                               problem_name=problem_name,
@@ -213,7 +223,8 @@ if __name__ == "__main__":
                               max_steps=args.max_simulation_steps, # TODO change this
                               time_limit=args.time_limit,
                               planner=planner,
-                              alpha=args.alpha)
+                              alpha=args.alpha,
+                              beta=args.beta)
 
     # Setup the evaluator
     evaluator.setup()
