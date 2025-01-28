@@ -5,12 +5,12 @@ import os
 
 import argparse
 import sys
-import uuid
+# import uuid
 
 # TODO remove these once they have been encapsulated
-from skd_domains.skd_pddl_domain import SkdPDDLDomain
-from skd_domains.skd_ppddl_domain import SkdPPDDLDomain
-from skd_domains.skd_spddl_domain import SkdSPDDLDomain
+# from skd_domains.skd_pddl_domain import SkdPDDLDomain
+# from skd_domains.skd_ppddl_domain import SkdPPDDLDomain
+# from skd_domains.skd_spddl_domain import SkdSPDDLDomain
 
 # from generate_instance import ProbConfig, main as encode_json
 from beluga_lib.beluga_problem import BelugaProblemDecoder
@@ -21,6 +21,7 @@ from evaluation.planner_examples import FixedPlanDeterministicPlanner
 from evaluation.planner_examples import LazyAstarDeterministicPlanner, LazyAstarProbabilisticPlanner
 
 def build_planner(args):
+    planner = None
     if args.det_plan_file is not None:
         planner = FixedPlanDeterministicPlanner(args.det_plan_file)
     elif args.probabilistic_evaluation:
