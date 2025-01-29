@@ -488,7 +488,6 @@ class DeterministicEvaluator:
 
     def setup(self):
         # Build an SKD domain
-        # self.domain = SkdPDDLDomain(self.prb, self.problem_name, self.problem_folder, classic=False)
         self.domain = SkdPDDLDomain(self.prb, self.problem_name, classic=False)
         # Build an support object
         self.es = EvaluationSupport(self.prb, self.domain)
@@ -684,11 +683,6 @@ class ProbabilisticEvaluator:
 
     def setup(self):
         # Build an SKD domain
-        # self.domain = SkdSPDDLDomain(self.prb,
-        #                              self.problem_name,
-        #                              self.problem_folder,
-        #                              seed=self.seed,
-        #                              classic=False)
         self.domain = SkdSPDDLDomain(self.prb,
                                      self.problem_name,
                                      seed=self.seed,

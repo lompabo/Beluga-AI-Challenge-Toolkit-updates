@@ -5,14 +5,7 @@ import os
 
 import argparse
 import sys
-# import uuid
 
-# TODO remove these once they have been encapsulated
-# from skd_domains.skd_pddl_domain import SkdPDDLDomain
-# from skd_domains.skd_ppddl_domain import SkdPPDDLDomain
-# from skd_domains.skd_spddl_domain import SkdSPDDLDomain
-
-# from generate_instance import ProbConfig, main as encode_json
 from beluga_lib.beluga_problem import BelugaProblemDecoder
 import generate_instance as bgi
 from evaluation.evaluators import ProbabilisticEvaluator, DeterministicEvaluator
@@ -60,15 +53,6 @@ if __name__ == "__main__":
 
     # Parse the instance generation parameters
     bgi._setup_argument_parser(parser)
-
-    # # Specific parameters for this script
-    # parser.add_argument(
-    #     "-n",
-    #     "--numeric",
-    #     dest="numeric",
-    #     help="numeric encoding, otherwise classic encoding",
-    #     action="store_true",
-    # )
 
     parser.add_argument(
         "-ms",
@@ -163,13 +147,6 @@ if __name__ == "__main__":
             sys.stderr.write(f'The `prebuilt-plan` option is incompatible with the probabilistic evaluation')
         if args.input_problem is None:
             sys.stderr.write(f'When using the `prebuilt-plan` option, an input problem must be specified')
-
-    # # Build directories for the temporary files, if needed
-    # if gen_params['problem_folder'] is None:
-    #     gen_params['problem_folder'] = "__tmp_out_" + uuid.uuid4().hex + "__"
-    #     # os.makedirs(gen_params['problem_folder'])
-    # if not os.path.exists(gen_params['problem_folder']):
-    #     os.makedirs(gen_params['problem_folder'])
 
     # ========================================================================
     # Generate a problem instance
