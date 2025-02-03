@@ -258,11 +258,6 @@ class LazyAstarProbabilisticPlanner(ProbabilisticPlannerAPI):
             # print(f'>>> solving planning problem at step {metadata.current_step}')
             slv.solve()
             plan = slv.get_plan()
-        # except AssertionError as e: # NOTE Handle a known issue with scikit-decide
-        #     if e.args[0] == 'n (counts) have to be positive':
-        #         return None
-        #     else:
-        #         raise e
 
         # Cleanup
         domain.cleanup()
@@ -296,8 +291,6 @@ class RandomProbabilisticPlanner(ProbabilisticPlannerAPI):
         # Build a SKD domain
         domain = SkdPDDLDomain(self.prb, problem_name='server_side_domain',
                                classic=self.classic, initial_state=state)
-        # domain = SkdPDDLDomain(self.prb, problem_name='server_side_domain',
-        #                        classic=self.classic, initial_state=None)
         action_space = domain.get_action_space()
         observation_space = domain.get_observation_space()
 
@@ -314,13 +307,7 @@ class RandomProbabilisticPlanner(ProbabilisticPlannerAPI):
             return None
 
         # Determine applicable actions
-        # try:
         actions = domain.get_applicable_actions(s)
-        # except AssertionError as e: # NOTE Handle a known issue with scikit-decide
-        #     if e.args[0] == 'n (counts) have to be positive':
-        #         return None
-        #     else:
-        #         raise e
 
         # print('-' * 78)
         # print('PLANNER APPLICABLE ACTIONS')
