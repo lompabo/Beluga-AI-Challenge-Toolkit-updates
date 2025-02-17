@@ -177,11 +177,11 @@ def compute_score_dict(outcome : SingleSimulationOutcome,
     A = outcome.goal_reached
     # Second input term (relative plan length)
     B = 0
-    if outcome.plan is not None:
+    if outcome.plan is not None and prb is not None:
         B = len(outcome.plan.actions) / len(prb.jigs)
     # Third input term (inverse of the relative number of free racks)
     C = 0
-    if outcome.free_racks is not None:
+    if outcome.free_racks is not None and prb is not None:
         C = len(prb.racks) / (1 + outcome.free_racks)
     value = A * np.exp(- alpha * B - beta * C)
     # res = {'value': value, 'alpha': alpha, 'beta': beta}
