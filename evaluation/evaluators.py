@@ -73,21 +73,19 @@ class SingleSimulationOutcome:
     def __repr__(self):
         return self.to_json_str()
 
-    def from_json_obj(json_obj):
-        res = SingleSimulationOutcome()
-        res.alpha = json_obj['alpha']
-        res.plan_construction_time = json_obj['plan_construction_time']
-        res.error_msg = json_obj['error_msg']
-        res.plan = BelugaPlan.from_json_obj(json_obj['plan'])
-        res.final_state = BelugaProblemState.from_json_obj(json_obj['final_state']) if json_obj['final_state'] is not None else None,
-        res.final_step = json_obj['final_step']
-        res.goal_reached = json_obj['goal_reached']
-        res.abrupt_plan_end = json_obj['abrupt_plan_end']
-        res.invalid_plan = json_obj['invalid_plan']
-        res.time_limit_reached = json_obj['time_limit_reached']
-        res.step_limit_reached = json_obj['step_limit_reached']
-        res.free_racks = json_obj['free_racks']
-        res.score = json_obj['score']
+    def from_json_obj(json_obj, prb, alpha, beta):
+        plan_construction_time = json_obj['plan_construction_time']
+        error_msg = json_obj['error_msg']
+        plan = BelugaPlan.from_json_obj(json_obj['plan'], prb)
+        final_state = BelugaProblemState.from_json_obj(json_obj['final_state'], prb) if json_obj['final_state'] is not None else None
+        final_step = json_obj['final_step']
+        goal_reached = json_obj['goal_reached']
+        abrupt_plan_end = json_obj['abrupt_plan_end']
+        invalid_plan = json_obj['invalid_plan']
+        time_limit_reached = json_obj['time_limit_reached']
+        step_limit_reached = json_obj['step_limit_reached']
+        free_racks = json_obj['free_racks']
+        res = SingleSimulationOutcome(plan_construction_time, error_msg, plan, final_state, final_step, goal_reached, abrupt_plan_end, invalid_plan, time_limit_reached, step_limit_reached, free_racks, prb, alpha, beta)
         return res
 
 
